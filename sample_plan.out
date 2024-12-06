@@ -1,0 +1,107 @@
+Problem:    
+Rows:       47
+Columns:    36 (28 integer, 28 binary)
+Non-zeros:  191
+Status:     INTEGER OPTIMAL
+Objective:  obj = 15 (MAXimum)
+
+   No.   Row name        Activity     Lower bound   Upper bound
+------ ------------    ------------- ------------- -------------
+     1 fitness0                    2             2             = 
+     2 fitness1                    0             0             = 
+     3 fitness2                    0             0             = 
+     4 fitness3                    0             0             = 
+     5 fitness4                    0             0             = 
+     6 fitness5                    0             0             = 
+     7 fitness6                    0             0             = 
+     8 fitness7                    0             0             = 
+     9 r.16                        1                           1 
+    10 r.17                        1                           1 
+    11 r.18                        0                           1 
+    12 r.19                        1                           1 
+    13 r.20                        1                           1 
+    14 r.21                        1                           1 
+    15 r.22                        0                           1 
+    16 r.25                        1                           1 
+    17 r.26                        1                           1 
+    18 r.27                        0                           1 
+    19 r.28                        0                           1 
+    20 r.30                        1                           1 
+    21 r.31                        0                           1 
+    22 r.32                        0                           1 
+    23 r.33                        1                           1 
+    24 r.35                        0                           1 
+    25 r.36                        0                           1 
+    26 r.37                        1                           1 
+    27 r.38                        1                           1 
+    28 r.40                        0                           1 
+    29 r.41                        1                           1 
+    30 r.42                        1                           1 
+    31 r.43                        0                           1 
+    32 r.45                        0                           1 
+    33 r.46                        0                           1 
+    34 r.47                        0                           1 
+    35 r.48                        0                           1 
+    36 r.50                        0                           1 
+    37 r.51                        0                           1 
+    38 r.52                        0                           1 
+    39 r.53                        0                           1 
+    40 r.56                        0                           1 
+    41 r.57                        0                           1 
+    42 r.58                        0                           1 
+    43 r.59                        0                           1 
+    44 r.62                        3                           3 
+    45 r.63                        3                           3 
+    46 r.64                        3                           3 
+    47 r.65                        3                           3 
+
+   No. Column name       Activity     Lower bound   Upper bound
+------ ------------    ------------- ------------- -------------
+     1 f7                         15             0               
+     2 f0                          2             0               
+     3 f1                          1             0               
+     4 easy1        *              1             0             1 
+     5 medium1      *              0             0             1 
+     6 hard1        *              0             0             1 
+     7 s1           *              0             0             1 
+     8 f2                          0             0               
+     9 easy2        *              0             0             1 
+    10 medium2      *              1             0             1 
+    11 hard2        *              0             0             1 
+    12 s2           *              0             0             1 
+    13 f3                          0             0               
+    14 easy3        *              0             0             1 
+    15 medium3      *              0             0             1 
+    16 hard3        *              0             0             1 
+    17 s3           *              0             0             1 
+    18 f4                          1             0               
+    19 easy4        *              0             0             1 
+    20 medium4      *              0             0             1 
+    21 hard4        *              1             0             1 
+    22 s4           *              0             0             1 
+    23 f5                          0             0               
+    24 easy5        *              1             0             1 
+    25 medium5      *              0             0             1 
+    26 hard5        *              0             0             1 
+    27 s5           *              0             0             1 
+    28 f6                          1             0               
+    29 easy6        *              1             0             1 
+    30 medium6      *              0             0             1 
+    31 hard6        *              0             0             1 
+    32 s6           *              0             0             1 
+    33 easy7        *              0             0             1 
+    34 medium7      *              0             0             1 
+    35 hard7        *              0             0             1 
+    36 s7           *              0             0             1 
+
+Integer feasibility conditions:
+
+KKT.PE: max.abs.err = 0.00e+00 on row 0
+        max.rel.err = 0.00e+00 on row 0
+        High quality
+
+KKT.PB: max.abs.err = 8.88e-16 on row 3
+        max.rel.err = 8.88e-16 on row 3
+        High quality
+
+End of output
