@@ -58,9 +58,49 @@ if __name__ == "__main__":
 
             lp += dayi + dayi_1 + dayi_2 + dayi_3 + dayi_4 + dayi_5 + dayi_6
 
+    lp += "\n"
+
     # no back-to-back medium/hard workouts
+    for i in range(2, args[0]+1):
+        mh = f"medium{i} + hard{i-1} <= 1\n"
+        mm = f"medium{i} + medium{i-1} <= 1\n"
+        hm = f"hard{i} + medium{i-1} <= 1\n"
+        hh = f"hard{i} + hard{i-1} <= 1\n"
+        lp += mh + mm + hm + hh
+
+    lp += "\n"
+
+    # 3 days between strength workouts
+    for i in range(1, args[0]-2):
+        si = f"s{i} + s{i+1} + s{i+2} + s{i+3} <= 1\n"
+        lp += si
+
+    lp += "\n"
+
+    acc = ""
+    # strength reward constraints
     for i in range(1, args[0]+1):
-        dayij = "m"
+        acc += f"s{i} + "
+        if i >= 35:
+            acc = acc[0:-2]
+            lp += f"sc1_{i-34} = {acc}\n"
+
+            offset = len(str(i-34))+4
+            acc = acc[offset:]
+
+
+    lp += "bounds\n"
+
+    # bounds
+    for i in range(1, args[0]+1):
+        lp += f"f{i} > 0\n"
+
+    lp += "\nbinary\n"
+
+    for i in range(1, args[0]+1):
+        lp += f"easy{i}\nmedium{i}\nhard{i}\ns{i}\n\n"
+
+    lp += "end"
 
     with open("plan.lp", "w") as f:
         f.write(lp)
