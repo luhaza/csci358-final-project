@@ -13,10 +13,35 @@ STRENGTH_COST = 2
 STRENGTH_RETURN = 30
 
 if __name__ == "__main__":
-    # to run: python create_lp.py {plan length in days; min: 7} {how many rest days in a 7 day period} {baseline fitness} {number of races -optional- default=2}
+    # to run: python create_lp.py {plan length in days; min: 7} {how many rest days in a 7 day period; must be [0, 4]} {baseline fitness; min=1} {number of midseason races -optional- default=2 if plan >= 60 days else 1; at most 1 every 14 days}
     args = [int(x) for x in sys.argv[1:]]
-    inputs = []
-    num_workouts_per_day = 2 if args[2] >= 50 else 1 #doubles
+
+    assert 3 <= len(args) <= 4, "Inadequate number of arguments. Must be 3 or 4."
+    assert args[0] > 7, "Minimum length for a plan is 7 days."
+    assert 0 <= args[1] <= 4, "Rest days must be between (inclusive) 0 and 4."
+    assert args[2] > 0, "Baseline fitness must be > 0."
+
+    midseason_races = []
+    midseason_races_plus_3 = []
+
+    if len(args) > 3:
+        assert args[3] < args[0] // 14, "Too many midseason races!"
+        midseason_races = [args[0]//(args[3]+1) * i for i in range(1, args[3] + 1)]
+        midseason_races_plus_3 = [(args[0]//(args[3]+1) * i)+4 for i in range(1, args[3] + 1)]
+        
+    else:
+        if args[0] >= 60:
+            midseason_races.append(args[0]//2)
+            midseason_races_plus_3.append(args[0]//2 + 4)
+
+    # print(midseason_races, midseason_races_plus_3)
+    strength_reward_days = []
+    if args[0] >= 35:
+        strength_reward_days = [i for i in range(35, args[0] + 1, 7)]
+        
+    # print(strength_reward_days)
+
+    max_num_workouts_per_day = 2 if args[2] >= 50 else 1 #doubles
 
     lp = ""
     objective_function = f"maximize f{args[0]}\n\n"
@@ -30,14 +55,24 @@ if __name__ == "__main__":
 
     # daily fitness constraints
     for i in range(4, args[0]+1):
-        fi = f"f{i} - f{i-1} + {EASY_COST} easy{i} + {MEDIUM_COST}medium{i} + {HARD_COST}hard{i} + {STRENGTH_COST}s{i} - {EASY_RETURN} easy{i-1} - {MEDIUM_RETURN}medium{i-2} - {HARD_RETURN}hard{i-3} = 0\n"
-        lp += fi
+
+        if i in midseason_races:
+            fi = f"f{i} - f{i-1} + {1.25*i+args[2]} + {EASY_COST} easy{i} + {MEDIUM_COST}medium{i} + {HARD_COST}hard{i} + {STRENGTH_COST}s{i} - {EASY_RETURN} easy{i-1} - {MEDIUM_RETURN}medium{i-2} - {HARD_RETURN}hard{i-3}"
+        elif i in midseason_races_plus_3:
+            fi = f"f{i} - f{i-1} - {1.25*(i-4)+args[2]} + {EASY_COST} easy{i} + {MEDIUM_COST}medium{i} + {HARD_COST}hard{i} + {STRENGTH_COST}s{i} - {EASY_RETURN} easy{i-1} - {MEDIUM_RETURN}medium{i-2} - {HARD_RETURN}hard{i-3}"
+        else:
+            fi = f"f{i} - f{i-1} + {EASY_COST} easy{i} + {MEDIUM_COST}medium{i} + {HARD_COST}hard{i} + {STRENGTH_COST}s{i} - {EASY_RETURN} easy{i-1} - {MEDIUM_RETURN}medium{i-2} - {HARD_RETURN}hard{i-3}"
+        
+        if i in strength_reward_days:
+            fi += f" - 30sc3_{strength_reward_days.index(i)+1}"
+
+        lp += fi + " = 0\n"
 
     lp += "\n"
 
     # constrain number of workouts per day
     for i in range(1, args[0]+1):
-        dayi = f"easy{i} + medium{i} + hard{i} <= {num_workouts_per_day}\n"
+        dayi = f"easy{i} + medium{i} + hard{i} <= {max_num_workouts_per_day}\n"
         one_med_hard = f"medium{i} + hard{i} <= 1\n"
         lp += dayi + one_med_hard
 
@@ -77,19 +112,50 @@ if __name__ == "__main__":
 
     lp += "\n"
 
-    acc = ""
     # strength reward constraints
+    acc = ""
+    week = 1
     for i in range(1, args[0]+1):
-        acc += f"s{i} + "
-        if i >= 35:
-            acc = acc[0:-2]
-            lp += f"sc1_{i-34} = {acc}\n"
+        if len(acc) != 0:
+            acc += " - "
+        acc += f"s{i}"
+        # if i >= 35:
+        #     lp += f"sc1_{i-34} - {acc} = 0\n"
+        #     lp += f"sc2_{i-34} - 0.2sc1_{i-34} = 0\n"
+        #     lp += f"sc2_{i-34} + sc2_{i-27} + sc2_{i-20} + sc2_{i-13} + sc2_{i-6} <= 1\n"
 
-            offset = len(str(i-34))+4
-            acc = acc[offset:]
+        #     offset = len(str(i-34))+4
+        #     acc = acc[offset:]
+        if i % 7 == 0:
+            lp += f"sc1_{week} - {acc} = 0\n" # sum for week i
 
+            if week >= 5:
+                lp += f"sc2_{week-4} - sc1_{week} - sc1_{week-1} - sc1_{week-2} - sc1_{week-3} - sc1_{week-4} = 0\n" # sum of last 5 weeks
+                lp += f"sc3_{week-4} - 0.2sc2_{week-4} = 0\n"
+                # lp += f"sc3_{week-4} + sc3_{week-3} + sc3_{week-2} + sc3_{week-1} + sc3_{week} <= 1\n\n"
+            week += 1
+            acc = ""
 
-    lp += "bounds\n"
+    lp += "\n"
+    
+    fives = ""
+
+    if week-4 <= 5:
+        for i in range(1, week-4):
+            fives += f"sc3_{i} + "
+            fives = fives[:-2]
+            fives += "<= 1\n"
+            lp += fives
+    else:
+        for i in range(1, week-8):
+            lp += f"sc3_{i} + sc3_{i+1} + sc3_{i+2} + sc3_{i+3} + sc3_{i+4} <= 1\n"
+
+    if week-4 <= 5:
+        fives = fives[:-2]
+        fives += "<= 0\n"
+        lp += fives
+
+    lp += "\nbounds\n"
 
     # bounds
     for i in range(1, args[0]+1):
