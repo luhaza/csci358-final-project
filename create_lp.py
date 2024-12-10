@@ -12,6 +12,9 @@ HARD_RETURN = 12
 STRENGTH_COST = 2
 STRENGTH_RETURN = 30
 
+# want to follow common training intensity breakdowns
+FRAMEWORK = [.70,.20,.10]
+
 if __name__ == "__main__":
     # to run: python create_lp.py {plan length in days; min: 7} {how many rest days in a 7 day period; must be [0, 4]} {baseline fitness; min=1} {number of midseason races -optional- default=2 if plan >= 60 days else 1; at most 1 every 14 days}
     args = [int(x) for x in sys.argv[1:]]
@@ -151,6 +154,43 @@ if __name__ == "__main__":
     else:
         for i in range(1, week-8):
             lp += f"sc3_{i} + sc3_{i+1} + sc3_{i+2} + sc3_{i+3} + sc3_{i+4} <= 1\n"
+
+    # variable for total number of runs
+    total = "\ntotal - "
+
+    for i in range(1, args[0]+1):
+        total += f"easy{i} - medium{i} - hard{i} - "
+
+    total = total[:-2]
+    total += "= 0\n"
+    # print(total)
+
+    lp += total + "\n\n"
+
+    eb = ""
+    for i in range(1, args[0]+1):
+        eb += f"easy{i} + "
+
+    eb = eb[:-2]
+    eb += f"- {FRAMEWORK[0]}total >= 0\n"
+
+    lp += eb
+
+    mb = ""
+    for i in range(1, args[0]+1):
+        mb += f"medium{i} + "
+
+    mb = mb[:-2]
+    mb += f"- {FRAMEWORK[1]}total = 0\n"
+    lp += mb
+
+    hb = ""
+    for i in range(1, args[0]+1):
+        hb += f"hard{i} + "
+
+    hb = hb[:-2]
+    hb += f"- {FRAMEWORK[2]}total <= 0\n"
+    lp += hb
 
     lp += "\nbounds\n"
 
