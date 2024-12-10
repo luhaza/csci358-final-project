@@ -57,16 +57,16 @@ if __name__ == "__main__":
     for i in range(4, args[0]+1):
 
         if i in midseason_races:
-            fi = f"f{i} - f{i-1} + {1.25*i+args[2]} + {EASY_COST} easy{i} + {MEDIUM_COST}medium{i} + {HARD_COST}hard{i} + {STRENGTH_COST}s{i} - {EASY_RETURN} easy{i-1} - {MEDIUM_RETURN}medium{i-2} - {HARD_RETURN}hard{i-3}"
+            fi = f"f{i} - f{i-1} + {EASY_COST} easy{i} + {MEDIUM_COST}medium{i} + {HARD_COST}hard{i} + {STRENGTH_COST}s{i} - {EASY_RETURN} easy{i-1} - {MEDIUM_RETURN}medium{i-2} - {HARD_RETURN}hard{i-3} = -{1.25*i+args[2]}\n"
         elif i in midseason_races_plus_3:
-            fi = f"f{i} - f{i-1} - {1.25*(i-4)+args[2]} + {EASY_COST} easy{i} + {MEDIUM_COST}medium{i} + {HARD_COST}hard{i} + {STRENGTH_COST}s{i} - {EASY_RETURN} easy{i-1} - {MEDIUM_RETURN}medium{i-2} - {HARD_RETURN}hard{i-3}"
+            fi = f"f{i} - f{i-1} + {EASY_COST} easy{i} + {MEDIUM_COST}medium{i} + {HARD_COST}hard{i} + {STRENGTH_COST}s{i} - {EASY_RETURN} easy{i-1} - {MEDIUM_RETURN}medium{i-2} - {HARD_RETURN}hard{i-3} = {1.25*(i-4)+args[2]}\n"
         else:
-            fi = f"f{i} - f{i-1} + {EASY_COST} easy{i} + {MEDIUM_COST}medium{i} + {HARD_COST}hard{i} + {STRENGTH_COST}s{i} - {EASY_RETURN} easy{i-1} - {MEDIUM_RETURN}medium{i-2} - {HARD_RETURN}hard{i-3}"
+            fi = f"f{i} - f{i-1} + {EASY_COST} easy{i} + {MEDIUM_COST}medium{i} + {HARD_COST}hard{i} + {STRENGTH_COST}s{i} - {EASY_RETURN} easy{i-1} - {MEDIUM_RETURN}medium{i-2} - {HARD_RETURN}hard{i-3} = 0\n"
         
         if i in strength_reward_days:
-            fi += f" - 30sc3_{strength_reward_days.index(i)+1}"
+            fi = fi.replace(f"f{i-1}",f"f{i-1} - 30sc3_{strength_reward_days.index(i)+1}")
 
-        lp += fi + " = 0\n"
+        lp += fi
 
     lp += "\n"
 
