@@ -140,7 +140,8 @@ if __name__ == "__main__":
     
     fives = ""
 
-    if week-4 <= 5:
+    print(week-4)
+    if 1 < week-4 <= 5:
         for i in range(1, week-4):
             fives += f"sc3_{i} + "
             
