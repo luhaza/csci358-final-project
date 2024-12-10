@@ -13,7 +13,7 @@ STRENGTH_COST = 2
 STRENGTH_RETURN = 30
 
 # want to follow common training intensity breakdowns
-FRAMEWORK = [.70,.20,.10]
+FRAMEWORK = [.7,.2,.1]
 
 if __name__ == "__main__":
     # to run: python create_lp.py {plan length in days; min: 7} {how many rest days in a 7 day period; must be [0, 4]} {baseline fitness; min=1} {number of midseason races -optional- default=2 if plan >= 60 days else 1; at most 1 every 14 days}
@@ -37,14 +37,15 @@ if __name__ == "__main__":
             midseason_races.append(args[0]//2)
             midseason_races_plus_3.append(args[0]//2 + 4)
 
-    # print(midseason_races, midseason_races_plus_3)
+    print(midseason_races, midseason_races_plus_3)
     strength_reward_days = []
     if args[0] >= 35:
         strength_reward_days = [i for i in range(35, args[0] + 1, 7)]
         
     # print(strength_reward_days)
 
-    max_num_workouts_per_day = 2 if args[2] >= 50 else 1 #doubles
+    #max_num_workouts_per_day = 2 if args[2] >= 50 else 1 #doubles
+    max_num_workouts_per_day = 1
 
     lp = ""
     objective_function = f"maximize f{args[0]}\n\n"

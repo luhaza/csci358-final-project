@@ -29,7 +29,8 @@ def spread_items(x, y):
 ####
 
 plan_length = random.randint(1, 10)
-rest_days = random.randint(0, 4)
+#rest_days = random.randint(0, 3)
+rest_days = 1
 baseline_fitness = random.randint(1, 100)
 num_races = random.randint(1, 2*plan_length)
 
@@ -37,14 +38,17 @@ race_dates = spread_items(plan_length, num_races)
 
 print(f"Creating plan with plan_length={plan_length*35} rest_days={rest_days} baseline_fitness={baseline_fitness} num_races={num_races}")
 for i in range(1, plan_length+1):
+    print(f"current parameters: 35 {rest_days} {baseline_fitness} {race_dates[i-1]}\n")
     os.system(f"python3 create_lp.py 35 {rest_days} {baseline_fitness} {race_dates[i-1]}")
-    os.system(f"glpsol --cpxlp plan.lp -o plan.out")
+    os.system(f"glpsol --cpxlp plan.lp -o plan{i}.out")
 
-    with open("lp_output.txt", "r") as file:
+    with open(f"plan{i}.out", "r") as file:
         lp_output = file.read()
 
     match = re.search(r"Objective:\s+obj\s*=\s*(\d+)", lp_output)
     baseline_fitness = int(match.group(1))
+    
+    print(f"***{baseline_fitness}***")
 
     if i+1 == plan_length+1:
         print(f"With this plan, you achieve a fitness of {baseline_fitness}!")
