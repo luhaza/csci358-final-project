@@ -28,7 +28,7 @@ if __name__ == "__main__":
     midseason_races_plus_3 = []
 
     if len(args) > 3:
-        assert args[3] < args[0] // 14, "Too many midseason races!"
+        assert args[3] < args[0] / 14, "Too many midseason races!"
         midseason_races = [args[0]//(args[3]+1) * i for i in range(1, args[3] + 1)]
         midseason_races_plus_3 = [(args[0]//(args[3]+1) * i)+4 for i in range(1, args[3] + 1)]
         
@@ -81,18 +81,29 @@ if __name__ == "__main__":
 
     lp += "\n"
 
+    # off days
+    for i in range(1, args[0]+1):
+        lp += f"easy{i} + medium{i} + hard{i} + 3off_{i} <= 3\n"
+
+    lp += "\n"
+    for i in range(1, args[0]-6):
+        lp += f"off_{i} + off_{i+1} + off_{i+2} + off_{i+3} + off_{i+4} + off_{i+5} + off_{i+6} = {args[1]}\n"
+
+    lp += "\n"
     # constrain number of workouts per 7 days
     for i in range(args[0], 1, -1):
         if i-6 < 1:
             break
         else:
-            dayi = f"easy{i} + medium{i} + hard{i} + "
+            dayi   = f"easy{i} + medium{i} + hard{i} + "
             dayi_1 = f"easy{i-1} + medium{i-1} + hard{i-1} + "
             dayi_2 = f"easy{i-2} + medium{i-2} + hard{i-2} + "
             dayi_3 = f"easy{i-3} + medium{i-3} + hard{i-3} + "
             dayi_4 = f"easy{i-4} + medium{i-4} + hard{i-4} + "
             dayi_5 = f"easy{i-5} + medium{i-5} + hard{i-5} + "
             dayi_6 = f"easy{i-6} + medium{i-6} + hard{i-6} <= 10\n"
+
+            # print(f"0.5{dayi}")
 
             lp += dayi + dayi_1 + dayi_2 + dayi_3 + dayi_4 + dayi_5 + dayi_6
 
@@ -201,7 +212,7 @@ if __name__ == "__main__":
     lp += "\nbinary\n"
 
     for i in range(1, args[0]+1):
-        lp += f"easy{i}\nmedium{i}\nhard{i}\ns{i}\n\n"
+        lp += f"easy{i}\nmedium{i}\nhard{i}\ns{i}\noff_{i}\n\n"
 
     for i in range(1, week-4):
         lp += f"sc3_{i}\n"
