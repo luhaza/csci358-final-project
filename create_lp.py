@@ -163,7 +163,10 @@ if __name__ == "__main__":
     for i in range(1, args[0]+1):
         lp += f"easy{i}\nmedium{i}\nhard{i}\ns{i}\n\n"
 
-    lp += "end"
+    for i in range(1, week-4):
+        lp += f"sc3_{i}\n"
+
+    lp += "\nend"
 
     with open("plan.lp", "w") as f:
         f.write(lp)
