@@ -143,17 +143,13 @@ if __name__ == "__main__":
     if week-4 <= 5:
         for i in range(1, week-4):
             fives += f"sc3_{i} + "
-            fives = fives[:-2]
-            fives += "<= 1\n"
-            lp += fives
+            
+        fives = fives[:-2]
+        fives += "<= 1\n"
+        lp += fives
     else:
         for i in range(1, week-8):
             lp += f"sc3_{i} + sc3_{i+1} + sc3_{i+2} + sc3_{i+3} + sc3_{i+4} <= 1\n"
-
-    if week-4 <= 5:
-        fives = fives[:-2]
-        fives += "<= 0\n"
-        lp += fives
 
     lp += "\nbounds\n"
 
