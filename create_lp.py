@@ -20,7 +20,7 @@ if __name__ == "__main__":
     args = [int(x) for x in sys.argv[1:]]
 
     assert 3 <= len(args) <= 4, "Inadequate number of arguments. Must be 3 or 4."
-    assert args[0] > 7, "Minimum length for a plan is 7 days."
+    assert args[0] >= 7, "Minimum length for a plan is 7 days."
     assert 0 <= args[1] <= 4, "Rest days must be between (inclusive) 0 and 4."
     assert args[2] > 0, "Baseline fitness must be > 0."
 
